@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux';
-import users from './users';
+import photos from './photos';
 
 export const reducers = combineReducers({
-  users: users,
+  photos: photos,
 });

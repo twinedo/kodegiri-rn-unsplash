@@ -8,12 +8,13 @@ interface ButtonProps {
   prefix?: ReactNode;
   postfix?: ReactNode;
   width?: number;
+  onPress: () => void;
 }
 
 const Button = (props: ButtonProps) => {
-  const {text, prefix, postfix, width} = props;
+  const {text, prefix, postfix, width, onPress} = props;
   return (
-    <Pressable style={[styles.container, {width}]}>
+    <Pressable {...props} style={[styles.container, {width}]} onPress={onPress}>
       {prefix}
       <Text style={styles.text}>{text}</Text>
       {postfix}

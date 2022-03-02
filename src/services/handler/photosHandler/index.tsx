@@ -9,3 +9,14 @@ export const getPhotos = async () => {
     return error;
   }
 };
+
+export const getSearchPhotos = async (text: string, page: number) => {
+  try {
+    const response = await axios.get(
+      `${API_MAIN}/search/photos?client_id=${API_KEY}&query=${text}&page=${page}`,
+    );
+    return response.data;
+  } catch (error) {
+    return error;
+  }
+};
