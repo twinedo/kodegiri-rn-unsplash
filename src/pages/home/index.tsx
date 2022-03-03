@@ -231,7 +231,10 @@ const Home = () => {
               </View>
               <Pressable
                 style={styles.clickDetail}
-                onPress={() => navigation.navigate('Detail', {items: items})}>
+                onPress={() => {
+                  setIsModalVisible(false);
+                  navigation.navigate('Detail', {items: items});
+                }}>
                 <TextBold style={{color: WHITE}}>Click to Detail</TextBold>
               </Pressable>
             </View>
