@@ -1,12 +1,12 @@
 import {createSlice} from '@reduxjs/toolkit';
 
-interface UserProps {
+export interface UserProps {
   name: string;
   username: string;
   profile_image: string;
 }
 
-interface PhotoState {
+export interface PhotoState {
   description: string;
   urls: string;
   user: UserProps;

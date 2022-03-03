@@ -13,11 +13,11 @@ const Toolbar = (props: ToolbarProps) => {
   const {text, prefix, postfix} = props;
   return (
     <View style={styles.container}>
-      <View style={styles.prepos}>{prefix}</View>
+      <View style={styles.prefix}>{prefix}</View>
       <View style={styles.middle}>
         <TextBold style={styles.text}>{text}</TextBold>
       </View>
-      <View style={styles.prepos}>{postfix}</View>
+      <View style={styles.postfix}>{postfix}</View>
     </View>
   );
 };
@@ -39,10 +39,13 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 18,
   },
-  prepos: {
+  prefix: {
     flex: 0.5,
-
-    alignItems: 'center',
+    alignItems: 'flex-start',
+  },
+  postfix: {
+    flex: 0.5,
+    alignItems: 'flex-end',
   },
 });
 

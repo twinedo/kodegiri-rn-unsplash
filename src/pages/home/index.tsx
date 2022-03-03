@@ -3,6 +3,7 @@ import {
   Dimensions,
   FlatList,
   Image,
+  ImageBackground,
   Pressable,
   StatusBar,
   StyleSheet,
@@ -10,12 +11,13 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import {BLACK, GREY1, GREY2, WHITE} from 'styles/colors';
-import {Button, Input} from 'components';
+import {Button, Input, Modals} from 'components';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {getSearchPhotos} from 'services/handler/photosHandler';
 import {TextBold} from 'styles/text-styles';
-import {reducerPhoto} from 'services/redux/reducers/photos';
+import {PhotoState, reducerPhoto} from 'services/redux/reducers/photos';
 import {useAppDispatch, useAppSelector} from 'services/redux/hooks';
+import {useNavigation} from '@react-navigation/native';
 
 const {width, height} = Dimensions.get('window');
 
@@ -29,6 +31,8 @@ const Home = () => {
   const dispatch = useAppDispatch();
   const photos = useAppSelector(state => state.photos);
   console.log('photos', photos);
+
+  const navigation = useNavigation();
 
   const [searchText, setSearchText] = useState('');
 
@@ -69,8 +73,25 @@ const Home = () => {
     }
   };
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const [items, setItems] = useState<PhotoState>({
+    description: '',
+    urls: '',
+    user: {
+      name: '',
+      username: '',
+      profile_image: '',
+    },
+    likes: 0,
+    alt_description: 'string',
+  });
+
   const onItemClick = (item: any) => {
     console.log(item);
+    setIsModalVisible(true);
+    setItems(item);
+
     dispatch(
       reducerPhoto({
         alt_description: item.alt_description,
@@ -176,6 +197,47 @@ const Home = () => {
           />
         </View>
       </View>
+      <Modals
+        isVisible={isModalVisible}
+        onBackButtonPress={() => setIsModalVisible(false)}
+        onBackdropPress={() => setIsModalVisible(false)}
+        children={
+          <ImageBackground
+            source={{uri: items?.urls?.full}}
+            style={styles.imgModal}>
+            <View style={styles.bgOverlay}>
+              <Ionicons
+                name="close-circle"
+                color={WHITE}
+                size={32}
+                onPress={() => {
+                  setIsModalVisible(false);
+                }}
+                style={styles.closeCircle}
+              />
+              <View style={styles.shortProfile}>
+                <Image
+                  source={{uri: items?.user?.profile_image?.medium}}
+                  style={styles.imgProfile}
+                />
+                <View style={{flex: 1, marginLeft: 10}}>
+                  <TextBold style={{color: WHITE}}>
+                    {items?.user?.username}
+                  </TextBold>
+                  <TextBold style={{color: WHITE}}>
+                    {items?.alt_description}
+                  </TextBold>
+                </View>
+              </View>
+              <Pressable
+                style={styles.clickDetail}
+                onPress={() => navigation.navigate('Detail', {items: items})}>
+                <TextBold style={{color: WHITE}}>Click to Detail</TextBold>
+              </Pressable>
+            </View>
+          </ImageBackground>
+        }
+      />
     </View>
   );
 };
@@ -227,4 +289,24 @@ const styles = StyleSheet.create({
   },
   containerFlatlist: {flex: 1, width: '100%'},
   fg1: {flexGrow: 1},
+  bgOverlay: {flex: 1, backgroundColor: 'rgba(0,0,0,0.5)'},
+  imgModal: {width: '100%', height: '100%'},
+  imgProfile: {width: 60, height: 60, borderRadius: 30},
+  shortProfile: {
+    position: 'absolute',
+    left: 10,
+    bottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  closeCircle: {position: 'absolute', right: 10, top: 10},
+  clickDetail: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    left: 0,
+    top: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
